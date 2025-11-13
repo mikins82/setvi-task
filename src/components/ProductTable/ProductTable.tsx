@@ -39,7 +39,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
 
   // Handle infinite scroll
   const handleRowsRendered = useCallback(
-    ({ startIndex, stopIndex }: { startIndex: number; stopIndex: number }) => {
+    ({ stopIndex }: { startIndex: number; stopIndex: number }) => {
       // If we're within 5 items of the end and not already fetching, fetch more
       if (!isFetchingNextPage && hasNextPage && stopIndex >= allProducts.length - 5) {
         fetchNextPage();
@@ -55,11 +55,6 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   }: {
     index: number;
     style: React.CSSProperties;
-    ariaAttributes: {
-      "aria-posinset": number;
-      "aria-setsize": number;
-      role: "listitem";
-    };
   }) => {
     // Show loader row if we're past the loaded products
     if (index >= allProducts.length) {
@@ -103,11 +98,11 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   return (
     <Box sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
       <TableHeader />
-      <List
+      <List<Record<string, never>>
         rowHeight={80}
         rowCount={itemCount}
         rowComponent={RowComponent}
-        rowProps={{}}
+        rowProps={{} as Record<string, never>}
         onRowsRendered={handleRowsRendered}
         defaultHeight={600}
       />

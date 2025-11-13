@@ -7,7 +7,6 @@ import {
   Divider,
   Chip,
   CircularProgress,
-  Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useQuery } from "@tanstack/react-query";
@@ -73,9 +72,9 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
           <Box>
             {/* Product Images */}
             {product.images && product.images.length > 0 && (
-              <Grid container spacing={1} sx={{ mb: 3 }}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
                 {product.images.slice(0, 4).map((image, index) => (
-                  <Grid item xs={6} key={index}>
+                  <Box key={index} sx={{ width: "calc(50% - 4px)" }}>
                     <img
                       src={image}
                       alt={`${product.title} ${index + 1}`}
@@ -86,9 +85,9 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
                         borderRadius: 8,
                       }}
                     />
-                  </Grid>
+                  </Box>
                 ))}
-              </Grid>
+              </Box>
             )}
 
             {/* Product Title */}
