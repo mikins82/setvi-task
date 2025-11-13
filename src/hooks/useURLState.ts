@@ -1,0 +1,49 @@
+import { useSearchParams } from "react-router-dom";
+
+/**
+ * Custom hook to manage application state via URL search parameters
+ * Provides a single source of truth for query, category, and productId
+ */
+export const useURLState = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get("q") || "";
+  const category = searchParams.get("category") || "";
+  const productId = searchParams.get("productId") || "";
+
+  const updateQuery = (q: string) => {
+    setSearchParams((params) => {
+      if (q) params.set("q", q);
+      else params.delete("q");
+      params.delete("category"); // Clear category when searching
+      return params;
+    });
+  };
+
+  const updateCategory = (cat: string) => {
+    setSearchParams((params) => {
+      if (cat) params.set("category", cat);
+      else params.delete("category");
+      params.delete("q"); // Clear search when filtering
+      return params;
+    });
+  };
+
+  const updateProductId = (id: string) => {
+    setSearchParams((params) => {
+      if (id) params.set("productId", id);
+      else params.delete("productId");
+      return params;
+    });
+  };
+
+  return {
+    query,
+    category,
+    productId,
+    updateQuery,
+    updateCategory,
+    updateProductId,
+  };
+};
+
