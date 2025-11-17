@@ -11,13 +11,17 @@ import { EmptyState } from "../common/EmptyState";
 interface ProductTableProps {
   query: string;
   category: string;
+  urlPage: number;
   onRowClick: (productId: number) => void;
+  onPageChange: (page: number) => void;
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   query,
   category,
+  urlPage,
   onRowClick,
+  onPageChange,
 }) => {
   const {
     data,
@@ -30,6 +34,8 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   } = useInfiniteProducts({ q: query, category });
 
   const parentRef = useRef<HTMLDivElement>(null);
+  const isRestoringFromURLRef = useRef(false);
+  const targetScrollIndexRef = useRef<number | null>(null);
 
   // Flatten all pages into single array
   const allProducts = useMemo(
@@ -48,7 +54,55 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     overscan: 5,
   });
 
-  // Fetch more data when scrolling near the end
+  // Load pages from URL on initial mount
+  useEffect(() => {
+    if (!isLoading && urlPage > 1) {
+      const currentPage = data?.pages.length || 0;
+      
+      // Continue loading if we haven't reached the target page yet
+      if (currentPage < urlPage && hasNextPage && !isFetchingNextPage) {
+        if (!isRestoringFromURLRef.current) {
+          // First time - set the flag and target
+          isRestoringFromURLRef.current = true;
+          // Calculate target scroll position (middle of the last page)
+          const targetIndex = (urlPage - 1) * 30 + 15; // Middle of the target page
+          targetScrollIndexRef.current = targetIndex;
+        }
+        // Load next page (will trigger this effect again after state updates)
+        fetchNextPage();
+      }
+    }
+  }, [isLoading, urlPage, data?.pages.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // Update URL page when data changes (user scrolled and loaded more)
+  useEffect(() => {
+    if (!isRestoringFromURLRef.current && data?.pages.length) {
+      const currentPage = data.pages.length;
+      if (currentPage !== urlPage) {
+        onPageChange(currentPage);
+      }
+    }
+  }, [data?.pages.length, urlPage, onPageChange]);
+
+  // Restore scroll position after loading from URL
+  useEffect(() => {
+    if (
+      targetScrollIndexRef.current !== null &&
+      allProducts.length >= targetScrollIndexRef.current &&
+      !isFetchingNextPage
+    ) {
+      const scrollIndex = targetScrollIndexRef.current;
+      targetScrollIndexRef.current = null;
+      isRestoringFromURLRef.current = false; // Done restoring
+
+      // Use requestAnimationFrame to ensure DOM is updated
+      requestAnimationFrame(() => {
+        virtualizer.scrollToIndex(scrollIndex, { align: "center", behavior: "auto" });
+      });
+    }
+  }, [allProducts.length, isFetchingNextPage, virtualizer]);
+
+  // Fetch more data when scrolling near the end (normal infinite scroll)
   useEffect(() => {
     const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
 

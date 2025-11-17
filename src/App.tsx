@@ -9,7 +9,7 @@ import { ProductTable } from "./components/ProductTable/ProductTable";
 import { ProductDrawer } from "./components/ProductDrawer/ProductDrawer";
 
 function AppContent() {
-  const { query, category, productId, updateQuery, updateCategory, updateProductId } = useURLState();
+  const { query, category, productId, page, updateQuery, updateCategory, updateProductId, updatePage } = useURLState();
   const [searchInput, setSearchInput] = useState(query);
   
   // Debounce the search query
@@ -45,6 +45,10 @@ function AppContent() {
     updateProductId("");
   }, [updateProductId]);
 
+  const handlePageChange = useCallback((pageNum: number) => {
+    updatePage(pageNum);
+  }, [updatePage]);
+
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
@@ -76,7 +80,9 @@ function AppContent() {
       <ProductTable
         query={debouncedQuery}
         category={category}
+        urlPage={page}
         onRowClick={handleRowClick}
+        onPageChange={handlePageChange}
       />
 
       {/* Product Detail Drawer */}
