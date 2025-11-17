@@ -12,7 +12,7 @@ interface AISummaryProps {
 
 export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
   const [summaryText, setSummaryText] = useState<string>("");
-  const [shouldGenerate, setShouldGenerate] = useState(false);
+  const [shouldGenerate, setShouldGenerate] = useState<boolean>(false);
 
   const { displayedText, isComplete, isTyping, start } = useTypewriter(
     summaryText,

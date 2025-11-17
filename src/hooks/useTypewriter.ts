@@ -20,10 +20,10 @@ export const useTypewriter = (
   options: UseTypewriterOptions = {}
 ) => {
   const { speed = 30, punctuationDelay = 150 } = options;
-  const [displayedText, setDisplayedText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState<string>("");
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const start = useCallback(() => {
     setDisplayedText("");

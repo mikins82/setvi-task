@@ -10,7 +10,7 @@ import { ProductDrawer } from "./components/ProductDrawer/ProductDrawer";
 
 function AppContent() {
   const { query, category, productId, page, updateQuery, updateCategory, updateProductId, updatePage } = useURLState();
-  const [searchInput, setSearchInput] = useState(query);
+  const [searchInput, setSearchInput] = useState<string>(query);
   
   // Debounce the search query
   const debouncedQuery = useDebounce(searchInput, 300);

@@ -31,18 +31,18 @@ export const fetchProducts = async (params: {
 
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch products");
-  return response.json();
+  return response.json() as Promise<ProductsResponse>;
 };
 
 export const fetchProductById = async (id: string): Promise<Product> => {
   const response = await fetch(`${BASE_URL}/products/${id}`);
   if (!response.ok) throw new Error("Failed to fetch product");
-  return response.json();
+  return response.json() as Promise<Product>;
 };
 
 export const fetchCategories = async (): Promise<Category[]> => {
   const response = await fetch(`${BASE_URL}/products/categories`);
   if (!response.ok) throw new Error("Failed to fetch categories");
-  return response.json();
+  return response.json() as Promise<Category[]>;
 };
 
