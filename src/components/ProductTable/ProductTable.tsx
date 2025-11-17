@@ -1,6 +1,6 @@
-import { useMemo, useCallback, useRef } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { Box, CircularProgress } from "@mui/material";
-import { List, type ListImperativeAPI } from "react-window";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useInfiniteProducts } from "../../hooks/useProducts";
 import { TableHeader } from "./TableHeader";
 import { ProductRow } from "./ProductRow";
@@ -29,9 +29,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     refetch,
   } = useInfiniteProducts({ q: query, category });
 
-  // Ref to preserve scroll position when drawer opens/closes
-  const listRef = useRef<ListImperativeAPI>(null);
-  const lastScrollIndexRef = useRef<number>(0);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   // Flatten all pages into single array
   const allProducts = useMemo(
@@ -39,48 +37,40 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     [data]
   );
 
+  // Calculate total item count (add 1 for loader row if has more pages)
   const itemCount = hasNextPage ? allProducts.length + 1 : allProducts.length;
 
-  // Handle infinite scroll - trigger when near the end
-  const handleRowsRendered = useCallback(
-    ({ stopIndex }: { startIndex: number; stopIndex: number }) => {
-      // Save scroll position for restoration
-      lastScrollIndexRef.current = stopIndex;
+  // Create virtualizer
+  const virtualizer = useVirtualizer({
+    count: itemCount,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 80, // Row height
+    overscan: 5,
+  });
 
-      // If we're within 5 items of the end and not already fetching, fetch more
-      if (!isFetchingNextPage && hasNextPage && stopIndex >= allProducts.length - 5) {
-        fetchNextPage();
-      }
-    },
-    [isFetchingNextPage, hasNextPage, allProducts.length, fetchNextPage]
-  );
+  // Fetch more data when scrolling near the end
+  useEffect(() => {
+    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
 
-  // Row renderer component
-  const RowComponent = useCallback(
-    ({
-      index,
-      style,
-    }: {
-      index: number;
-      style: React.CSSProperties;
-    }) => {
-      // Show loader row if we're past the loaded products
-      if (index >= allProducts.length) {
-        return <LoaderRow style={style} />;
-      }
+    if (!lastItem) {
+      return;
+    }
 
-      const product = allProducts[index];
-      return (
-        <ProductRow
-          key={product.id}
-          product={product}
-          style={style}
-          onClick={() => onRowClick(product.id)}
-        />
-      );
-    },
-    [allProducts, onRowClick]
-  );
+    // Fetch next page when within 5 items of the end
+    if (
+      lastItem.index >= allProducts.length - 5 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    hasNextPage,
+    fetchNextPage,
+    allProducts.length,
+    isFetchingNextPage,
+    virtualizer.getVirtualItems(),
+  ]);
 
   if (isLoading) {
     return (
@@ -108,15 +98,52 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   return (
     <Box sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
       <TableHeader />
-      <List<Record<string, never>>
-        listRef={listRef}
-        rowHeight={80}
-        rowCount={itemCount}
-        rowComponent={RowComponent}
-        rowProps={{} as Record<string, never>}
-        onRowsRendered={handleRowsRendered}
-        defaultHeight={600}
-      />
+      <Box
+        ref={parentRef}
+        sx={{
+          height: 600,
+          overflow: "auto",
+          contain: "strict",
+        }}
+      >
+        <Box
+          sx={{
+            height: `${virtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          {virtualizer.getVirtualItems().map((virtualItem) => {
+            const isLoaderRow = virtualItem.index >= allProducts.length;
+
+            return (
+              <Box
+                key={virtualItem.key}
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: `${virtualItem.size}px`,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {isLoaderRow ? (
+                  <LoaderRow style={{}} />
+                ) : (
+                  <ProductRow
+                    product={allProducts[virtualItem.index]}
+                    style={{}}
+                    onClick={() =>
+                      onRowClick(allProducts[virtualItem.index].id)
+                    }
+                  />
+                )}
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
     </Box>
   );
 };
