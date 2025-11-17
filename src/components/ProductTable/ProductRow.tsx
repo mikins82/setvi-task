@@ -4,16 +4,19 @@ import type { Product } from "../../api/types";
 
 interface ProductRowProps {
   product: Product;
+  productId: number;
   style: React.CSSProperties;
-  onClick: () => void;
+  onRowClick: (id: number) => void;
 }
 
 export const ProductRow: React.FC<ProductRowProps> = React.memo(
-  ({ product, style, onClick }) => {
+  ({ product, productId, style, onRowClick }) => {
+    const handleClick = () => onRowClick(productId);
+    
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        onClick();
+        handleClick();
       }
     };
 
@@ -22,7 +25,7 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
         role="row"
         tabIndex={0}
         style={style}
-        onClick={onClick}
+        onClick={handleClick}
         onKeyDown={handleKeyDown}
         sx={{
           display: "flex",

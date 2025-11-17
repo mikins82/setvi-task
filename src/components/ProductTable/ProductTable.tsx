@@ -187,10 +187,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 ) : (
                   <ProductRow
                     product={allProducts[virtualItem.index]}
+                    productId={allProducts[virtualItem.index].id}
                     style={{}}
-                    onClick={() =>
-                      onRowClick(allProducts[virtualItem.index].id)
-                    }
+                    onRowClick={onRowClick}
                   />
                 )}
               </Box>
