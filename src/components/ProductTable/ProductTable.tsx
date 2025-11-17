@@ -1,6 +1,6 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useRef } from "react";
 import { Box, CircularProgress } from "@mui/material";
-import { List } from "react-window";
+import { List, type ListImperativeAPI } from "react-window";
 import { useInfiniteProducts } from "../../hooks/useProducts";
 import { TableHeader } from "./TableHeader";
 import { ProductRow } from "./ProductRow";
@@ -29,6 +29,10 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     refetch,
   } = useInfiniteProducts({ q: query, category });
 
+  // Ref to preserve scroll position when drawer opens/closes
+  const listRef = useRef<ListImperativeAPI>(null);
+  const lastScrollIndexRef = useRef<number>(0);
+
   // Flatten all pages into single array
   const allProducts = useMemo(
     () => data?.pages.flatMap((page) => page.products) || [],
@@ -37,9 +41,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
 
   const itemCount = hasNextPage ? allProducts.length + 1 : allProducts.length;
 
-  // Handle infinite scroll
+  // Handle infinite scroll - trigger when near the end
   const handleRowsRendered = useCallback(
     ({ stopIndex }: { startIndex: number; stopIndex: number }) => {
+      // Save scroll position for restoration
+      lastScrollIndexRef.current = stopIndex;
+
       // If we're within 5 items of the end and not already fetching, fetch more
       if (!isFetchingNextPage && hasNextPage && stopIndex >= allProducts.length - 5) {
         fetchNextPage();
@@ -49,28 +56,31 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   );
 
   // Row renderer component
-  const RowComponent = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-  }) => {
-    // Show loader row if we're past the loaded products
-    if (index >= allProducts.length) {
-      return <LoaderRow style={style} />;
-    }
+  const RowComponent = useCallback(
+    ({
+      index,
+      style,
+    }: {
+      index: number;
+      style: React.CSSProperties;
+    }) => {
+      // Show loader row if we're past the loaded products
+      if (index >= allProducts.length) {
+        return <LoaderRow style={style} />;
+      }
 
-    const product = allProducts[index];
-    return (
-      <ProductRow
-        key={product.id}
-        product={product}
-        style={style}
-        onClick={() => onRowClick(product.id)}
-      />
-    );
-  };
+      const product = allProducts[index];
+      return (
+        <ProductRow
+          key={product.id}
+          product={product}
+          style={style}
+          onClick={() => onRowClick(product.id)}
+        />
+      );
+    },
+    [allProducts, onRowClick]
+  );
 
   if (isLoading) {
     return (
@@ -99,6 +109,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     <Box sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
       <TableHeader />
       <List<Record<string, never>>
+        listRef={listRef}
         rowHeight={80}
         rowCount={itemCount}
         rowComponent={RowComponent}
