@@ -75,14 +75,15 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
                 {product.images.slice(0, 4).map((image, index) => (
                   <Box key={index} sx={{ width: "calc(50% - 4px)" }}>
-                    <img
+                    <Box
+                      component="img"
                       src={image}
                       alt={`${product.title} ${index + 1}`}
-                      style={{
+                      sx={{
                         width: "100%",
                         height: 150,
                         objectFit: "cover",
-                        borderRadius: 8,
+                        borderRadius: 1,
                       }}
                     />
                   </Box>

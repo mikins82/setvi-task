@@ -44,16 +44,17 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
         }}
       >
         <Box sx={{ width: 80, flexShrink: 0 }}>
-          <img
+          <Box
+            component="img"
             src={product.thumbnail}
             alt={product.title}
-            style={{
+            loading="lazy"
+            sx={{
               width: 60,
               height: 60,
               objectFit: "cover",
-              borderRadius: 4,
+              borderRadius: 1,
             }}
-            loading="lazy"
           />
         </Box>
         <Box sx={{ width: 300, flexShrink: 0, px: 2 }}>

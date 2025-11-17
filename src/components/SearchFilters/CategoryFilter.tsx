@@ -5,6 +5,7 @@ import {
   MenuItem,
   CircularProgress,
   Box,
+  Typography,
 } from "@mui/material";
 import { useCategories } from "../../hooks/useCategories";
 
@@ -23,7 +24,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     return (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <CircularProgress size={20} />
-        <span>Loading categories...</span>
+        <Typography variant="body2" color="text.secondary">
+          Loading categories...
+        </Typography>
       </Box>
     );
   }
