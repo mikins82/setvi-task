@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Container, Typography, Box, Stack } from "@mui/material";
 import { useURLState } from "./hooks/useURLState";
@@ -15,12 +15,22 @@ function AppContent() {
   // Debounce the search query
   const debouncedQuery = useDebounce(searchInput, 300);
 
-  // Update URL when debounced query changes
+  // Update URL when debounced query changes (not on every keystroke)
+  useEffect(() => {
+    if (debouncedQuery !== query) {
+      updateQuery(debouncedQuery);
+    }
+  }, [debouncedQuery, query, updateQuery]);
+
+  // Sync searchInput with URL query on mount or when URL changes externally
+  useEffect(() => {
+    if (query !== searchInput) {
+      setSearchInput(query);
+    }
+  }, [query]);
+
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    if (value !== query) {
-      updateQuery(value);
-    }
   };
 
   const handleCategoryChange = useCallback((cat: string) => {
