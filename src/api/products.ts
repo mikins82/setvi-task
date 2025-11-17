@@ -12,13 +12,22 @@ export const fetchProducts = async (params: {
 
   let url = `${BASE_URL}/products`;
 
-  if (q) {
-    url = `${BASE_URL}/products/search?q=${encodeURIComponent(q)}`;
-  } else if (category) {
+  // Support combining category and query
+  if (category) {
+    // If category is set, use category endpoint and add query if present
     url = `${BASE_URL}/products/category/${encodeURIComponent(category)}`;
+    if (q) {
+      url += `?q=${encodeURIComponent(q)}&limit=${limit}&skip=${skip}`;
+    } else {
+      url += `?limit=${limit}&skip=${skip}`;
+    }
+  } else if (q) {
+    // If only query is set, use search endpoint
+    url = `${BASE_URL}/products/search?q=${encodeURIComponent(q)}&limit=${limit}&skip=${skip}`;
+  } else {
+    // No filters, use base products endpoint
+    url += `?limit=${limit}&skip=${skip}`;
   }
-
-  url += `${q ? "&" : "?"}limit=${limit}&skip=${skip}`;
 
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch products");

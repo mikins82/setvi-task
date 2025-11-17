@@ -15,7 +15,7 @@ export const useURLState = () => {
     setSearchParams((params) => {
       if (q) params.set("q", q);
       else params.delete("q");
-      params.delete("category"); // Clear category when searching
+      // Keep category - allow combining query and category
       return params;
     });
   };
@@ -24,7 +24,7 @@ export const useURLState = () => {
     setSearchParams((params) => {
       if (cat) params.set("category", cat);
       else params.delete("category");
-      params.delete("q"); // Clear search when filtering
+      // Keep query - allow combining query and category
       return params;
     });
   };
