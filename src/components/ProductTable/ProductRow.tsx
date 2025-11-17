@@ -31,15 +31,12 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
           borderBottom: 1,
           borderColor: "divider",
           padding: 2,
-          transition: "background-color 0.2s",
           "&:hover": {
             bgcolor: "action.hover",
           },
           "&:focus": {
-            bgcolor: "action.focus",
-            outline: "2px solid",
-            outlineColor: "primary.main",
-            outlineOffset: "-2px",
+            bgcolor: "action.hover",
+            outline: "none",
           },
         }}
       >

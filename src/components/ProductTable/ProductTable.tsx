@@ -44,7 +44,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   const virtualizer = useVirtualizer({
     count: itemCount,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 80, // Row height
+    estimateSize: () => 97, // Row height (matches actual rendered height)
     overscan: 5,
   });
 
