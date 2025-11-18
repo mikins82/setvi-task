@@ -12,6 +12,7 @@ interface ProductTableProps {
   query: string;
   category: string;
   urlPage: number;
+  productId: string;
   onRowClick: (productId: number) => void;
   onPageChange: (page: number) => void;
 }
@@ -20,6 +21,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   query,
   category,
   urlPage,
+  productId,
   onRowClick,
   onPageChange,
 }) => {
@@ -36,6 +38,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   const parentRef = useRef<HTMLDivElement>(null);
   const isRestoringFromURLRef = useRef(false);
   const targetScrollIndexRef = useRef<number | null>(null);
+  const scrollOffsetRef = useRef<number>(0);
 
   // Flatten all pages into single array
   const allProducts = useMemo(
@@ -125,6 +128,21 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     isFetchingNextPage,
     virtualizer.getVirtualItems(),
   ]);
+
+  // Save and restore scroll position when drawer opens/closes
+  useEffect(() => {
+    if (productId) {
+      // Drawer opened - save current scroll position
+      scrollOffsetRef.current = parentRef.current?.scrollTop || 0;
+    } else if (scrollOffsetRef.current > 0) {
+      // Drawer closed - restore scroll position
+      requestAnimationFrame(() => {
+        if (parentRef.current) {
+          parentRef.current.scrollTop = scrollOffsetRef.current;
+        }
+      });
+    }
+  }, [productId]);
 
   if (isLoading) {
     return (

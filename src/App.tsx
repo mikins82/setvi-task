@@ -81,6 +81,7 @@ function AppContent() {
         query={debouncedQuery}
         category={category}
         urlPage={page}
+        productId={productId}
         onRowClick={handleRowClick}
         onPageChange={handlePageChange}
       />

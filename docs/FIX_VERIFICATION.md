@@ -211,3 +211,4 @@ The `!isLoading` check successfully prevents the initialization cascade by:
 
 The logic is sound and should resolve the reported issue.
 
+
