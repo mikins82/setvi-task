@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { PUNCTUATION, TIMING } from "../constants";
 
 interface UseTypewriterOptions {
   speed?: number;
@@ -8,18 +9,21 @@ interface UseTypewriterOptions {
 /**
  * Custom hook for typewriter animation effect
  * Displays text character by character with configurable delays
- * 
+ *
  * @param text - The text to display with typewriter effect
  * @param options - Configuration options
- * @param options.speed - Base delay between characters in milliseconds (default: 30)
- * @param options.punctuationDelay - Additional delay after punctuation in milliseconds (default: 150)
+ * @param options.speed - Base delay between characters in milliseconds (default from constants)
+ * @param options.punctuationDelay - Additional delay after punctuation in milliseconds (default from constants)
  * @returns Object with typewriter state and control functions
  */
 export const useTypewriter = (
   text: string,
   options: UseTypewriterOptions = {}
 ) => {
-  const { speed = 30, punctuationDelay = 150 } = options;
+  const {
+    speed = TIMING.TYPEWRITER_SPEED,
+    punctuationDelay = TIMING.TYPEWRITER_PUNCTUATION_DELAY,
+  } = options;
   const [displayedText, setDisplayedText] = useState<string>("");
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -49,7 +53,9 @@ export const useTypewriter = (
     }
 
     const currentChar = text[currentIndex];
-    const isPunctuation = [".", "!", "?", ","].includes(currentChar);
+    const isPunctuation = (PUNCTUATION as readonly string[]).includes(
+      currentChar
+    );
     const delay = isPunctuation ? punctuationDelay : speed;
 
     const timer = setTimeout(() => {
@@ -68,4 +74,3 @@ export const useTypewriter = (
     reset,
   };
 };
-

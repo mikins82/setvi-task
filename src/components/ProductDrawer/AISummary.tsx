@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchQuotes, mergeQuotesIntoText } from "../../api/quotes";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import { getProductSummary, saveProductSummary } from "../../utils/storage";
+import { UI_TEXT, TIMING, A11Y, QUERY_KEYS, QUERY_CONFIG, SYMBOLS } from "../../constants";
 
 interface AISummaryProps {
   productId: number;
@@ -16,7 +17,7 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
 
   const { displayedText, isComplete, isTyping, start } = useTypewriter(
     summaryText,
-    { speed: 30, punctuationDelay: 150 }
+    { speed: TIMING.TYPEWRITER_SPEED, punctuationDelay: TIMING.TYPEWRITER_PUNCTUATION_DELAY }
   );
 
   // Load from localStorage on mount
@@ -29,10 +30,10 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
 
   // Fetch quotes
   const { refetch } = useQuery({
-    queryKey: ["quotes"],
+    queryKey: [QUERY_KEYS.QUOTES],
     queryFn: fetchQuotes,
     enabled: false, // Don't fetch automatically
-    staleTime: Infinity, // Cache forever
+    staleTime: QUERY_CONFIG.STALE_TIME_INFINITY,
   });
 
   const handleGenerate = async () => {
@@ -48,11 +49,11 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
 
   if (summaryText && !isTyping && !shouldGenerate) {
     return (
-      <Box role="region" aria-label="AI-generated product summary">
+      <Box role={A11Y.ROLE.REGION} aria-label={UI_TEXT.AI_SUMMARY_REGION}>
         <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <AutoFixHighIcon aria-hidden="true" /> AI Summary
+          <AutoFixHighIcon aria-hidden="true" /> {UI_TEXT.AI_SUMMARY}
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50" }} role="article">
+        <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50" }} role={A11Y.ROLE.ARTICLE}>
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
             {summaryText}
           </Typography>
@@ -62,18 +63,18 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
           onClick={handleGenerate}
           startIcon={<AutoFixHighIcon />}
           sx={{ mt: 2 }}
-          aria-label="Regenerate AI summary"
+          aria-label={UI_TEXT.REGENERATE_SUMMARY_ARIA}
         >
-          Regenerate Summary
+          {UI_TEXT.REGENERATE_SUMMARY}
         </Button>
       </Box>
     );
   }
 
   return (
-    <Box role="region" aria-label="AI-generated product summary">
+    <Box role={A11Y.ROLE.REGION} aria-label={UI_TEXT.AI_SUMMARY_REGION}>
       <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <AutoFixHighIcon aria-hidden="true" /> AI Summary
+        <AutoFixHighIcon aria-hidden="true" /> {UI_TEXT.AI_SUMMARY}
       </Typography>
       
       {!isTyping && !displayedText && (
@@ -82,9 +83,9 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
           onClick={handleGenerate}
           startIcon={<AutoFixHighIcon />}
           fullWidth
-          aria-label="Generate AI summary for this product"
+          aria-label={UI_TEXT.GENERATE_SUMMARY_ARIA}
         >
-          Generate Summary
+          {UI_TEXT.GENERATE_SUMMARY}
         </Button>
       )}
       
@@ -92,10 +93,10 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
         <Paper 
           variant="outlined" 
           sx={{ p: 2, bgcolor: "grey.50", position: "relative" }}
-          role="status"
-          aria-live="polite"
+          role={A11Y.ROLE.STATUS}
+          aria-live={A11Y.ARIA_LIVE.POLITE}
           aria-busy={isTyping}
-          aria-label={isTyping ? "Generating summary" : "Summary complete"}
+          aria-label={isTyping ? UI_TEXT.GENERATING_SUMMARY : UI_TEXT.SUMMARY_COMPLETE}
         >
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
             {displayedText}
@@ -116,7 +117,7 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
                   },
                 }}
               >
-                |
+                {SYMBOLS.CURSOR}
               </Box>
             )}
           </Typography>

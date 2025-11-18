@@ -1,4 +1,4 @@
-const STORAGE_KEY_PREFIX = "product_summary_";
+import { STORAGE, ERROR_MESSAGES } from "../constants";
 
 /**
  * Save a product summary to localStorage
@@ -10,9 +10,9 @@ export const saveProductSummary = (
   summary: string
 ): void => {
   try {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}${productId}`, summary);
+    localStorage.setItem(STORAGE.getProductSummaryKey(productId), summary);
   } catch (error) {
-    console.error("Failed to save summary to localStorage:", error);
+    console.error(ERROR_MESSAGES.SAVE_SUMMARY, error);
   }
 };
 
@@ -23,9 +23,9 @@ export const saveProductSummary = (
  */
 export const getProductSummary = (productId: number): string | null => {
   try {
-    return localStorage.getItem(`${STORAGE_KEY_PREFIX}${productId}`);
+    return localStorage.getItem(STORAGE.getProductSummaryKey(productId));
   } catch (error) {
-    console.error("Failed to get summary from localStorage:", error);
+    console.error(ERROR_MESSAGES.GET_SUMMARY, error);
     return null;
   }
 };
@@ -36,9 +36,9 @@ export const getProductSummary = (productId: number): string | null => {
  */
 export const clearProductSummary = (productId: number): void => {
   try {
-    localStorage.removeItem(`${STORAGE_KEY_PREFIX}${productId}`);
+    localStorage.removeItem(STORAGE.getProductSummaryKey(productId));
   } catch (error) {
-    console.error("Failed to clear summary from localStorage:", error);
+    console.error(ERROR_MESSAGES.CLEAR_SUMMARY, error);
   }
 };
 
@@ -49,12 +49,12 @@ export const clearAllSummaries = (): void => {
   try {
     const keys = Object.keys(localStorage);
     keys.forEach((key) => {
-      if (key.startsWith(STORAGE_KEY_PREFIX)) {
+      if (key.startsWith(STORAGE.KEY_PREFIX)) {
         localStorage.removeItem(key);
       }
     });
   } catch (error) {
-    console.error("Failed to clear all summaries:", error);
+    console.error(ERROR_MESSAGES.CLEAR_ALL_SUMMARIES, error);
   }
 };
 

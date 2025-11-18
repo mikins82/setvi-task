@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import type { Product } from "../../api/types";
+import { IMAGES, FORMATTING, SYMBOLS, A11Y, KEYBOARD } from "../../constants";
 
 interface ProductRowProps {
   product: Product;
@@ -14,7 +15,7 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
     const handleClick = () => onRowClick(productId);
     
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
+      if (e.key === KEYBOARD.ENTER || e.key === KEYBOARD.SPACE) {
         e.preventDefault();
         handleClick();
       }
@@ -22,12 +23,12 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
 
     return (
       <Box
-        role="row"
-        tabIndex={0}
+        role={A11Y.ROLE.ROW}
+        tabIndex={A11Y.TAB_INDEX_FOCUSABLE}
         style={style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        aria-label={`${product.title}, ${product.category}, $${product.price.toFixed(2)}, rated ${product.rating.toFixed(1)} stars. Press Enter to view details.`}
+        aria-label={`${product.title}, ${product.category}, ${SYMBOLS.DOLLAR}${product.price.toFixed(FORMATTING.PRICE_DECIMALS)}, rated ${product.rating.toFixed(FORMATTING.RATING_DECIMALS)} stars. Press Enter to view details.`}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -51,8 +52,8 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
             alt={product.title}
             loading="lazy"
             sx={{
-              width: 60,
-              height: 60,
+              width: IMAGES.THUMBNAIL_SIZE,
+              height: IMAGES.THUMBNAIL_SIZE,
               objectFit: "cover",
               borderRadius: 1,
             }}
@@ -70,12 +71,12 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
         </Box>
         <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
           <Typography variant="body2" fontWeight="medium">
-            ${product.price.toFixed(2)}
+            {SYMBOLS.DOLLAR}{product.price.toFixed(FORMATTING.PRICE_DECIMALS)}
           </Typography>
         </Box>
         <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
           <Typography variant="body2">
-            ⭐ {product.rating.toFixed(1)}
+            {SYMBOLS.STAR} {product.rating.toFixed(FORMATTING.RATING_DECIMALS)}
           </Typography>
         </Box>
       </Box>

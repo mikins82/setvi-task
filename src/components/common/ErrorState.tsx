@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { ERROR_MESSAGES, UI_TEXT, LAYOUT } from "../../constants";
 
 interface ErrorStateProps {
   message?: string;
@@ -7,7 +8,7 @@ interface ErrorStateProps {
 }
 
 export const ErrorState: React.FC<ErrorStateProps> = ({
-  message = "Something went wrong. Please try again.",
+  message = ERROR_MESSAGES.GENERIC,
   onRetry,
 }) => {
   return (
@@ -17,7 +18,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: 8,
+        padding: LAYOUT.ERROR_STATE_PADDING,
         textAlign: "center",
       }}
     >
@@ -27,7 +28,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       </Typography>
       {onRetry && (
         <Button variant="contained" onClick={onRetry} sx={{ mt: 2 }}>
-          Retry
+          {UI_TEXT.RETRY_BUTTON}
         </Button>
       )}
     </Box>

@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useCategories } from "../../hooks/useCategories";
+import { UI_TEXT } from "../../constants";
 
 interface CategoryFilterProps {
   value: string;
@@ -25,7 +26,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <CircularProgress size={20} />
         <Typography variant="body2" color="text.secondary">
-          Loading categories...
+          {UI_TEXT.LOADING_CATEGORIES}
         </Typography>
       </Box>
     );
@@ -37,17 +38,17 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="category-filter-label">Category</InputLabel>
+      <InputLabel id="category-filter-label">{UI_TEXT.FILTER_CATEGORY_LABEL}</InputLabel>
       <Select
         labelId="category-filter-label"
         id="category-filter"
         value={value}
-        label="Category"
+        label={UI_TEXT.FILTER_CATEGORY_LABEL}
         onChange={(e) => onChange(e.target.value)}
-        aria-label="Filter by category"
+        aria-label={UI_TEXT.FILTER_BY_CATEGORY}
       >
         <MenuItem value="">
-          <em>All Categories</em>
+          <em>{UI_TEXT.ALL_CATEGORIES}</em>
         </MenuItem>
         {categories?.map((category) => (
           <MenuItem key={category.slug} value={category.slug}>

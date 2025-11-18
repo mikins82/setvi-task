@@ -1,6 +1,12 @@
-import { TextField, InputAdornment, IconButton, CircularProgress } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import { A11Y, UI_TEXT } from "../../constants";
 
 interface SearchBarProps {
   value: string;
@@ -22,11 +28,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       fullWidth
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      placeholder="Search products..."
+      placeholder={UI_TEXT.SEARCH_PLACEHOLDER}
       variant="outlined"
       size="medium"
-      aria-label="Search products"
-      role="searchbox"
+      aria-label={UI_TEXT.SEARCH_ARIA_LABEL}
+      role={A11Y.ROLE.SEARCHBOX}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -40,7 +46,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               <IconButton
                 size="small"
                 onClick={handleClear}
-                aria-label="Clear search"
+                aria-label={UI_TEXT.CLEAR_SEARCH}
               >
                 <CloseIcon />
               </IconButton>
@@ -51,4 +57,3 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     />
   );
 };
-

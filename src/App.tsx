@@ -7,13 +7,14 @@ import { SearchBar } from "./components/SearchFilters/SearchBar";
 import { CategoryFilter } from "./components/SearchFilters/CategoryFilter";
 import { ProductTable } from "./components/ProductTable/ProductTable";
 import { ProductDrawer } from "./components/ProductDrawer/ProductDrawer";
+import { UI_TEXT, TIMING, A11Y } from "./constants";
 
 function AppContent() {
   const { query, category, productId, page, updateQuery, updateCategory, updateProductId, updatePage } = useURLState();
   const [searchInput, setSearchInput] = useState<string>(query);
   
   // Debounce the search query
-  const debouncedQuery = useDebounce(searchInput, 300);
+  const debouncedQuery = useDebounce(searchInput, TIMING.DEBOUNCE_DELAY);
 
   // Update URL when debounced query changes (not on every keystroke)
   useEffect(() => {
@@ -52,13 +53,13 @@ function AppContent() {
   return (
     <>
       {/* Skip Navigation Link for Screen Readers */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
+      <a href={`#${UI_TEXT.MAIN_CONTENT_ID}`} className="skip-link">
+        {UI_TEXT.SKIP_TO_CONTENT}
       </a>
       
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
-          Product Browser
+          {UI_TEXT.APP_TITLE}
         </Typography>
 
         {/* Search and Filters */}
@@ -67,7 +68,7 @@ function AppContent() {
           spacing={2} 
           sx={{ mb: 3 }}
           role="search"
-          aria-label="Product search and filters"
+          aria-label={UI_TEXT.SEARCH_REGION_LABEL}
         >
           <Box sx={{ flex: { xs: "1 1 auto", md: "2 1 auto" } }}>
             <SearchBar
@@ -85,7 +86,7 @@ function AppContent() {
         </Stack>
 
         {/* Product Table */}
-        <Box id="main-content" tabIndex={-1}>
+        <Box id={UI_TEXT.MAIN_CONTENT_ID} tabIndex={A11Y.TAB_INDEX_NOT_FOCUSABLE}>
           <ProductTable
             query={debouncedQuery}
             category={category}

@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import { UI_TEXT, LAYOUT } from "../../constants";
 
 interface EmptyStateProps {
   message?: string;
@@ -10,7 +11,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  message = "No products found.",
+  message = UI_TEXT.NO_PRODUCTS_FOUND,
   action,
 }) => {
   return (
@@ -20,7 +21,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: 8,
+        padding: LAYOUT.EMPTY_STATE_PADDING,
         textAlign: "center",
       }}
     >
