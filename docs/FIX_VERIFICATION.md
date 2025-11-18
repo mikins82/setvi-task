@@ -3,6 +3,7 @@
 ## Problem Before Fix
 
 On initialization, the callback was firing with `stopIndex = 7` while `allProducts.length = 0`, causing:
+
 - `7 >= 0 - 5` → `7 >= -5` → **TRUE** ✅
 - This triggered `fetchNextPage()` multiple times before `isFetchingNextPage` could update
 - Result: 7 pages fetched on mount
@@ -37,6 +38,7 @@ List mounts and calls: onRowsRendered({ stopIndex: ~7 })
 ```
 
 **Condition Check:**
+
 ```
 !isLoading               → true  ✅
 !isFetchingNextPage      → true  ✅
@@ -50,6 +52,7 @@ stopIndex >= allProducts.length - 5
 **Result:** `fetchNextPage()` **NOT CALLED** ✅
 
 **Why it doesn't trigger:**
+
 - User is viewing rows 0-7 (top of list)
 - Threshold is at row 25 (within 5 of 30)
 - User needs to scroll down to row 25+ to trigger
@@ -76,6 +79,7 @@ stopIndex >= allProducts.length - 5
 **Result:** `fetchNextPage()` **CALLED** ✅
 
 **Expected Network:**
+
 - `products?limit=30&skip=30` fetches
 
 ---
@@ -117,17 +121,20 @@ stopIndex >= allProducts.length - 5
 ## Expected Network Behavior
 
 ### On Page Load:
+
 ```
 GET /products/categories        ← Category filter
 GET /products?limit=30&skip=0   ← First page only
 ```
 
 ### On Scroll to Row 25+:
+
 ```
 GET /products?limit=30&skip=30  ← Second page
 ```
 
 ### On Scroll to Row 55+:
+
 ```
 GET /products?limit=30&skip=60  ← Third page
 ```
@@ -141,6 +148,7 @@ GET /products?limit=30&skip=60  ← Third page
 3. **Filter:** XHR/Fetch
 4. **Load page:** http://localhost:5173
 5. **Verify initial load:**
+
    - ✅ Should see 2 requests:
      - `categories`
      - `products?limit=30&skip=0`
@@ -148,6 +156,7 @@ GET /products?limit=30&skip=60  ← Third page
 
 6. **Scroll down slowly**
 7. **Verify scroll trigger:**
+
    - When reaching ~row 25, should see:
      - `products?limit=30&skip=30`
    - Should NOT see duplicate requests
@@ -162,24 +171,29 @@ GET /products?limit=30&skip=60  ← Third page
 ## Edge Cases Covered
 
 ### ✅ Initial Load with Empty List
+
 - `isLoading = true` → List not rendered → No callback fired
 
 ### ✅ Initial Load with Small Dataset (< 30 items)
+
 - If API returns 15 items total
 - `stopIndex = 7`, `allProducts.length = 15`
 - `7 >= 15 - 5` → `7 >= 10` → false
 - No extra fetch attempted (hasNextPage would be false anyway)
 
 ### ✅ Fast Scrolling
+
 - `isFetchingNextPage = true` blocks subsequent calls
 - Only one fetch per scroll trigger
 
 ### ✅ Slow Network
+
 - While `isLoading = true`, List shows spinner
 - No infinite scroll logic active
 - Once loaded, normal behavior
 
 ### ✅ Search/Filter Change
+
 - Query key changes → New query starts
 - `isLoading = true` again → Blocks infinite scroll
 - Fresh start with new data
@@ -210,5 +224,3 @@ The `!isLoading` check successfully prevents the initialization cascade by:
 4. Letting user-initiated scrolling trigger fetches naturally
 
 The logic is sound and should resolve the reported issue.
-
-

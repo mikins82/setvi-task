@@ -48,11 +48,11 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
 
   if (summaryText && !isTyping && !shouldGenerate) {
     return (
-      <Box>
+      <Box role="region" aria-label="AI-generated product summary">
         <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <AutoFixHighIcon /> AI Summary
+          <AutoFixHighIcon aria-hidden="true" /> AI Summary
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50" }}>
+        <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50" }} role="article">
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
             {summaryText}
           </Typography>
@@ -62,6 +62,7 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
           onClick={handleGenerate}
           startIcon={<AutoFixHighIcon />}
           sx={{ mt: 2 }}
+          aria-label="Regenerate AI summary"
         >
           Regenerate Summary
         </Button>
@@ -70,9 +71,9 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
   }
 
   return (
-    <Box>
+    <Box role="region" aria-label="AI-generated product summary">
       <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <AutoFixHighIcon /> AI Summary
+        <AutoFixHighIcon aria-hidden="true" /> AI Summary
       </Typography>
       
       {!isTyping && !displayedText && (
@@ -81,18 +82,27 @@ export const AISummary: React.FC<AISummaryProps> = ({ productId }) => {
           onClick={handleGenerate}
           startIcon={<AutoFixHighIcon />}
           fullWidth
+          aria-label="Generate AI summary for this product"
         >
           Generate Summary
         </Button>
       )}
       
       {(isTyping || displayedText) && (
-        <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50", position: "relative" }}>
+        <Paper 
+          variant="outlined" 
+          sx={{ p: 2, bgcolor: "grey.50", position: "relative" }}
+          role="status"
+          aria-live="polite"
+          aria-busy={isTyping}
+          aria-label={isTyping ? "Generating summary" : "Summary complete"}
+        >
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
             {displayedText}
             {!isComplete && (
               <Box
                 component="span"
+                aria-hidden="true"
                 sx={{
                   display: "inline-block",
                   width: "2px",

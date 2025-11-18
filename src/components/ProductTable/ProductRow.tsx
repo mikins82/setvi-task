@@ -27,6 +27,7 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
         style={style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
+        aria-label={`${product.title}, ${product.category}, $${product.price.toFixed(2)}, rated ${product.rating.toFixed(1)} stars. Press Enter to view details.`}
         sx={{
           display: "flex",
           alignItems: "center",

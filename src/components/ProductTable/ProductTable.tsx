@@ -157,6 +157,10 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   if (isLoading) {
     return (
       <Box
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        aria-label="Loading products"
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -180,7 +184,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   }
 
   return (
-    <Box sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
+    <Box 
+      sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}
+      role="region"
+      aria-label="Product list"
+      aria-busy={isFetchingNextPage}
+    >
       <TableHeader />
       <Box
         ref={parentRef}
@@ -189,6 +198,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           overflow: "auto",
           contain: "strict",
         }}
+        role="table"
+        aria-label="Products table with infinite scroll"
+        aria-rowcount={itemCount}
       >
         <Box
           sx={{
@@ -196,6 +208,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             width: "100%",
             position: "relative",
           }}
+          role="rowgroup"
         >
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const isLoaderRow = virtualItem.index >= allProducts.length;

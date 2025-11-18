@@ -37,7 +37,14 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
   }, [onClose]);
 
   return (
-    <Drawer anchor="right" open={!!productId} onClose={onClose}>
+    <Drawer 
+      anchor="right" 
+      open={!!productId} 
+      onClose={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="drawer-title"
+    >
       <Box sx={{ width: { xs: "100vw", sm: 500 }, p: 3 }}>
         <Box
           sx={{
@@ -47,10 +54,10 @@ export const ProductDrawer: React.FC<ProductDrawerProps> = ({
             mb: 2,
           }}
         >
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" component="h2" id="drawer-title">
             Product Details
           </Typography>
-          <IconButton onClick={onClose} aria-label="Close drawer">
+          <IconButton onClick={onClose} aria-label="Close product details drawer">
             <CloseIcon />
           </IconButton>
         </Box>

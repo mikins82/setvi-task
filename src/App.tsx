@@ -50,48 +50,59 @@ function AppContent() {
   }, [updatePage]);
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Product Browser
-      </Typography>
+    <>
+      {/* Skip Navigation Link for Screen Readers */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
+          Product Browser
+        </Typography>
 
-      {/* Search and Filters */}
-      <Stack 
-        direction={{ xs: "column", md: "row" }} 
-        spacing={2} 
-        sx={{ mb: 3 }}
-      >
-        <Box sx={{ flex: { xs: "1 1 auto", md: "2 1 auto" } }}>
-          <SearchBar
-            value={searchInput}
-            onChange={handleSearchChange}
-            isLoading={searchInput !== debouncedQuery}
+        {/* Search and Filters */}
+        <Stack 
+          direction={{ xs: "column", md: "row" }} 
+          spacing={2} 
+          sx={{ mb: 3 }}
+          role="search"
+          aria-label="Product search and filters"
+        >
+          <Box sx={{ flex: { xs: "1 1 auto", md: "2 1 auto" } }}>
+            <SearchBar
+              value={searchInput}
+              onChange={handleSearchChange}
+              isLoading={searchInput !== debouncedQuery}
+            />
+          </Box>
+          <Box sx={{ flex: { xs: "1 1 auto", md: "1 1 auto" } }}>
+            <CategoryFilter
+              value={category}
+              onChange={handleCategoryChange}
+            />
+          </Box>
+        </Stack>
+
+        {/* Product Table */}
+        <Box id="main-content" tabIndex={-1}>
+          <ProductTable
+            query={debouncedQuery}
+            category={category}
+            urlPage={page}
+            productId={productId}
+            onRowClick={handleRowClick}
+            onPageChange={handlePageChange}
           />
         </Box>
-        <Box sx={{ flex: { xs: "1 1 auto", md: "1 1 auto" } }}>
-          <CategoryFilter
-            value={category}
-            onChange={handleCategoryChange}
-          />
-        </Box>
-      </Stack>
 
-      {/* Product Table */}
-      <ProductTable
-        query={debouncedQuery}
-        category={category}
-        urlPage={page}
-        productId={productId}
-        onRowClick={handleRowClick}
-        onPageChange={handlePageChange}
-      />
-
-      {/* Product Detail Drawer */}
-      <ProductDrawer
-        productId={productId}
-        onClose={handleCloseDrawer}
-      />
-    </Container>
+        {/* Product Detail Drawer */}
+        <ProductDrawer
+          productId={productId}
+          onClose={handleCloseDrawer}
+        />
+      </Container>
+    </>
   );
 }
 
