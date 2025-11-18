@@ -1,18 +1,28 @@
-import { useState, useCallback, useEffect } from "react";
+import { Box, Container } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { Container, Typography, Box, Stack } from "@mui/material";
-import { useURLState } from "./hooks/useURLState";
-import { useDebounce } from "./hooks/useDebounce";
-import { SearchBar } from "./components/SearchFilters/SearchBar";
-import { CategoryFilter } from "./components/SearchFilters/CategoryFilter";
-import { ProductTable } from "./components/ProductTable/ProductTable";
+import { Header } from "./components/common/Header";
+import { SkipLink } from "./components/common/SkipLink";
 import { ProductDrawer } from "./components/ProductDrawer/ProductDrawer";
-import { UI_TEXT, TIMING, A11Y } from "./constants";
+import { ProductTable } from "./components/ProductTable/ProductTable";
+import { SearchFilters } from "./components/SearchFilters/SearchFilters";
+import { A11Y, TIMING, UI_TEXT } from "./constants";
+import { useDebounce } from "./hooks/useDebounce";
+import { useURLState } from "./hooks/useURLState";
 
 function AppContent() {
-  const { query, category, productId, page, updateQuery, updateCategory, updateProductId, updatePage } = useURLState();
+  const {
+    query,
+    category,
+    productId,
+    page,
+    updateQuery,
+    updateCategory,
+    updateProductId,
+    updatePage,
+  } = useURLState();
   const [searchInput, setSearchInput] = useState<string>(query);
-  
+
   // Debounce the search query
   const debouncedQuery = useDebounce(searchInput, TIMING.DEBOUNCE_DELAY);
 
@@ -34,59 +44,56 @@ function AppContent() {
     setSearchInput(value);
   };
 
-  const handleCategoryChange = useCallback((cat: string) => {
-    updateCategory(cat);
-  }, [updateCategory]);
+  const handleCategoryChange = useCallback(
+    (cat: string) => {
+      updateCategory(cat);
+    },
+    [updateCategory]
+  );
 
-  const handleRowClick = useCallback((id: number) => {
-    updateProductId(String(id));
-  }, [updateProductId]);
+  const handleRowClick = useCallback(
+    (id: number) => {
+      updateProductId(String(id));
+    },
+    [updateProductId]
+  );
 
   const handleCloseDrawer = useCallback(() => {
     updateProductId("");
   }, [updateProductId]);
 
-  const handlePageChange = useCallback((pageNum: number) => {
-    updatePage(pageNum);
-  }, [updatePage]);
+  const handlePageChange = useCallback(
+    (pageNum: number) => {
+      updatePage(pageNum);
+    },
+    [updatePage]
+  );
 
   return (
     <>
       {/* Skip Navigation Link for Screen Readers */}
-      <a href={`#${UI_TEXT.MAIN_CONTENT_ID}`} className="skip-link">
-        {UI_TEXT.SKIP_TO_CONTENT}
-      </a>
-      
+      <SkipLink
+        targetId={UI_TEXT.MAIN_CONTENT_ID}
+        label={UI_TEXT.SKIP_TO_CONTENT}
+      />
+
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
-          {UI_TEXT.APP_TITLE}
-        </Typography>
+        <Header title={UI_TEXT.APP_TITLE} />
 
         {/* Search and Filters */}
-        <Stack 
-          direction={{ xs: "column", md: "row" }} 
-          spacing={2} 
-          sx={{ mb: 3 }}
-          role="search"
-          aria-label={UI_TEXT.SEARCH_REGION_LABEL}
-        >
-          <Box sx={{ flex: { xs: "1 1 auto", md: "2 1 auto" } }}>
-            <SearchBar
-              value={searchInput}
-              onChange={handleSearchChange}
-              isLoading={searchInput !== debouncedQuery}
-            />
-          </Box>
-          <Box sx={{ flex: { xs: "1 1 auto", md: "1 1 auto" } }}>
-            <CategoryFilter
-              value={category}
-              onChange={handleCategoryChange}
-            />
-          </Box>
-        </Stack>
+        <SearchFilters
+          searchValue={searchInput}
+          categoryValue={category}
+          isSearching={searchInput !== debouncedQuery}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+        />
 
         {/* Product Table */}
-        <Box id={UI_TEXT.MAIN_CONTENT_ID} tabIndex={A11Y.TAB_INDEX_NOT_FOCUSABLE}>
+        <Box
+          id={UI_TEXT.MAIN_CONTENT_ID}
+          tabIndex={A11Y.TAB_INDEX_NOT_FOCUSABLE}
+        >
           <ProductTable
             query={debouncedQuery}
             category={category}
@@ -98,10 +105,7 @@ function AppContent() {
         </Box>
 
         {/* Product Detail Drawer */}
-        <ProductDrawer
-          productId={productId}
-          onClose={handleCloseDrawer}
-        />
+        <ProductDrawer productId={productId} onClose={handleCloseDrawer} />
       </Container>
     </>
   );
