@@ -57,22 +57,22 @@ export const ProductRow: React.FC<ProductRowProps> = React.memo(
             }}
           />
         </Box>
-        <Box sx={{ width: 300, flexShrink: 0, px: 2 }}>
+        <Box sx={{ flex: 2, minWidth: 0, px: 2 }}>
           <Typography variant="body2" noWrap>
             {product.title}
           </Typography>
         </Box>
-        <Box sx={{ width: 150, flexShrink: 0, px: 2 }}>
+        <Box sx={{ flex: 1, minWidth: 0, px: 2 }}>
           <Typography variant="body2" color="text.secondary" noWrap>
             {product.category}
           </Typography>
         </Box>
-        <Box sx={{ width: 100, flexShrink: 0, px: 2 }}>
+        <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
           <Typography variant="body2" fontWeight="medium">
             ${product.price.toFixed(2)}
           </Typography>
         </Box>
-        <Box sx={{ width: 100, flexShrink: 0, px: 2 }}>
+        <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
           <Typography variant="body2">
             ⭐ {product.rating.toFixed(1)}
           </Typography>

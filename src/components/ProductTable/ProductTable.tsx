@@ -1,12 +1,12 @@
-import { useMemo, useRef, useEffect } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useMemo, useRef } from "react";
 import { useInfiniteProducts } from "../../hooks/useProducts";
-import { TableHeader } from "./TableHeader";
-import { ProductRow } from "./ProductRow";
-import { LoaderRow } from "./LoaderRow";
-import { ErrorState } from "../common/ErrorState";
 import { EmptyState } from "../common/EmptyState";
+import { ErrorState } from "../common/ErrorState";
+import { LoaderRow } from "./LoaderRow";
+import { ProductRow } from "./ProductRow";
+import { TableHeader } from "./TableHeader";
 
 interface ProductTableProps {
   query: string;
@@ -61,7 +61,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   useEffect(() => {
     if (!isLoading && urlPage > 1) {
       const currentPage = data?.pages.length || 0;
-      
+
       // Continue loading if we haven't reached the target page yet
       if (currentPage < urlPage && hasNextPage && !isFetchingNextPage) {
         if (!isRestoringFromURLRef.current) {
@@ -75,7 +75,14 @@ export const ProductTable: React.FC<ProductTableProps> = ({
         fetchNextPage();
       }
     }
-  }, [isLoading, urlPage, data?.pages.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [
+    isLoading,
+    urlPage,
+    data?.pages.length,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
 
   // Update URL page when data changes (user scrolled and loaded more)
   useEffect(() => {
@@ -100,7 +107,10 @@ export const ProductTable: React.FC<ProductTableProps> = ({
 
       // Use requestAnimationFrame to ensure DOM is updated
       requestAnimationFrame(() => {
-        virtualizer.scrollToIndex(scrollIndex, { align: "center", behavior: "auto" });
+        virtualizer.scrollToIndex(scrollIndex, {
+          align: "center",
+          behavior: "auto",
+        });
       });
     }
   }, [allProducts.length, isFetchingNextPage, virtualizer]);
@@ -164,7 +174,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   }
 
   if (allProducts.length === 0) {
-    return <EmptyState message="No products found. Try adjusting your search or filters." />;
+    return (
+      <EmptyState message="No products found. Try adjusting your search or filters." />
+    );
   }
 
   return (
@@ -173,7 +185,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       <Box
         ref={parentRef}
         sx={{
-          height: 600,
+          height: "60vh",
           overflow: "auto",
           contain: "strict",
         }}
@@ -218,4 +230,3 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     </Box>
   );
 };
-

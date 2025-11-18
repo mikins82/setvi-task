@@ -22,22 +22,22 @@ export const TableHeader: React.FC = () => {
           Thumbnail
         </Typography>
       </Box>
-      <Box sx={{ width: 300, flexShrink: 0, px: 2 }}>
+      <Box sx={{ flex: 2, minWidth: 0, px: 2 }}>
         <Typography variant="subtitle2" fontWeight="bold">
           Title
         </Typography>
       </Box>
-      <Box sx={{ width: 150, flexShrink: 0, px: 2 }}>
+      <Box sx={{ flex: 1, minWidth: 0, px: 2 }}>
         <Typography variant="subtitle2" fontWeight="bold">
           Category
         </Typography>
       </Box>
-      <Box sx={{ width: 100, flexShrink: 0, px: 2 }}>
+      <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
         <Typography variant="subtitle2" fontWeight="bold">
           Price
         </Typography>
       </Box>
-      <Box sx={{ width: 100, flexShrink: 0, px: 2 }}>
+      <Box sx={{ flex: 0.7, minWidth: 0, px: 2 }}>
         <Typography variant="subtitle2" fontWeight="bold">
           Rating
         </Typography>
